@@ -83,7 +83,8 @@
   "jest": {
     "moduleDirectories": [
       "node_modules",
-      "release/app/node_modules"
+      "release/app/node_modules",
+      "src"
     ],
     "moduleFileExtensions": [
       "js",

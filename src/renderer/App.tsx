@@ -1,50 +1,107 @@
+import React, { useState } from "react";
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import icon from '../../assets/icon.svg';
+import CustomerTableView from "./CustomerTableView";
+import { 
+  Drawer, 
+  Button, 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  Box,
+  List,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Divider
+} from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
+import { Link } from "react-router-dom";
+
 import './App.css';
 
-const Hello = () => {
+export const NavigationBar = (props: any) => {
+  
+  const [visible, setVisible] = useState(false);
+  const toggleDrawer = () => setVisible(!visible);
+
   return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
+    <div style={{ height: 1080  }}>
+        <div style={styles.appBarContainer}>
+            <AppBar position="static">
+                      <Toolbar>
+                          <IconButton
+                              size="large"
+                              edge="start"
+                              color="inherit"
+                              aria-label="menu"
+                              sx={{ mr: 2 }}
+                              onClick={toggleDrawer}
+                          >
+                              <MenuIcon />
+                          </IconButton>
+                          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                              Menü 
+                          </Typography>
+                      </Toolbar>
+              </AppBar>
+              <Drawer
+                  anchor="left"
+                  open={visible}
+                  onClose={toggleDrawer}
+              >
+                  <Box
+                    role="presentation"
+                    onClick={toggleDrawer}
+                    onKeyDown={toggleDrawer}
+                  >
+                    <List>
+                        <Link to="/assistant">
+                          <ListItem key="Kundenassistent" disablePadding>
+                            <ListItemButton>
+                              <ListItemText primary="Kundenassistent" />
+                            </ListItemButton>
+                          </ListItem>
+                        </Link>
+                        <Divider />
+                        <Link to="/codes">
+                          <ListItem key="Rabattcodes" disablePadding>
+                            <ListItemButton>
+                              <ListItemText primary="Rabattcodes" />
+                            </ListItemButton>
+                          </ListItem>
+                        </Link>
+                    </List>
+                  </Box>
+            </Drawer>
+        </div>
+        {props.children}
     </div>
   );
 };
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
+    <NavigationBar />
   );
+}
+
+const styles = {
+  rootContainer: {
+      display: "flex",
+      flexDirection: "column" as "column"
+  },
+  appBarContainer: {
+      position: "absolute" as "absolute",
+      left: 0,
+      top: 0, 
+      width: "100%"
+  },
+  mainPageContent: {
+
+  },
+  drawerContentContainer: {
+      width: 200,
+  },
 }

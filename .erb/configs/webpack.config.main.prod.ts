@@ -71,7 +71,7 @@ const configuration: webpack.Configuration = {
    * https://github.com/webpack/webpack/issues/2010
    */
   node: {
-    __dirname: false,
+    __dirname: true,
     __filename: false,
   },
 };

@@ -12,8 +12,20 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import url from "url";
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import {
+  CREATE_CUSTOMER,
+  READ_CUSTOMER,
+  UPDATE_CUSTOMER,
+  DELETE_CUSTOMER,
+  Customer
+} from "../ipc-strings";
+import {
+  test,
+  getCustomer
+} from "../../api/customers";
 
 class AppUpdater {
   constructor() {
@@ -25,10 +37,24 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
+var customerCollection = null;
+
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on("CUSTOMER_DB_INIT", async (event, arg) => {
+  //customerCollection = await init();
+})
+
+ipcMain.on(CREATE_CUSTOMER, (event, arg) => {
+  test(arg);
+});
+
+ipcMain.on(READ_CUSTOMER, async (event, arg) => {
+  //return await getCustomer(customerCollection, arg);
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -65,6 +91,8 @@ const createWindow = async () => {
     ? path.join(process.resourcesPath, 'assets')
     : path.join(__dirname, '../../assets');
 
+  //const RESOURCES_PATH = path.join(process.resourcesPath, 'assets');
+
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
   };
@@ -76,13 +104,15 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       sandbox: false,
+      nodeIntegration: true,
+      contextIsolation: false,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
   });
 
-  mainWindow.loadURL(resolveHtmlPath('index.html'));
+  mainWindow.loadURL(resolveHtmlPath(''));
 
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
